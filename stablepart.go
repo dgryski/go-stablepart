@@ -2,37 +2,37 @@ package stablepart
 
 import "sort"
 
-func StablePartition(d sort.Interface, f, l int, p func(i int) bool) int {
+func StablePartition(d sort.Interface, first, last int, pred func(i int) bool) int {
 
-	n := l - f
+	n := last - first
 	if n == 0 {
-		return f
+		return first
 	}
 
 	if n == 1 {
-		r := f
-		if p(f) {
+		r := first
+		if pred(first) {
 			r++
 		}
 		return r
 	}
 
-	m := f + n/2
+	mid := first + n/2
 
-	return Rotate(d, StablePartition(d, f, m, p), m, StablePartition(d, m, l, p))
+	return Rotate(d, StablePartition(d, first, mid, pred), mid, StablePartition(d, mid, last, pred))
 }
 
-func Rotate(d sort.Interface, f, k, l int) int {
-	Reverse(d, f, k)
-	Reverse(d, k, l)
-	Reverse(d, f, l)
-	return f + l - k
+func Rotate(d sort.Interface, first, k, last int) int {
+	Reverse(d, first, k)
+	Reverse(d, k, last)
+	Reverse(d, first, last)
+	return first + last - k
 }
 
-func Reverse(d sort.Interface, f, l int) {
-	lend := (l - f)
+func Reverse(d sort.Interface, first, last int) {
+	lend := (last - first)
 	for i, j := 0, lend-1; i < lend/2; i, j = i+1, j-1 {
-		d.Swap(f+i, f+j)
+		d.Swap(first+i, first+j)
 	}
 }
 
@@ -46,7 +46,7 @@ func Slide(d sort.Interface, first, last, pos int) (int, int) {
 	return first, last
 }
 
-func Gather(d sort.Interface, first, last, pos int, p func(i int) bool) (int, int) {
-	notp := func(i int) bool { return !p(i) }
-	return StablePartition(d, first, pos, notp), StablePartition(d, pos, last, p)
+func Gather(d sort.Interface, first, last, pos int, pred func(i int) bool) (int, int) {
+	notp := func(i int) bool { return !pred(i) }
+	return StablePartition(d, first, pos, notp), StablePartition(d, pos, last, pred)
 }
