@@ -39,10 +39,10 @@ func ExampleRotate() {
 	// rotate data[1:4] by so that d[3] is first
 	idx := Rotate(data, 1, 3, 4)
 
-	// Output: [1 3 4 2 5]
-	// 3
 	fmt.Println(data)
 	fmt.Println(idx)
+	// Output: [1 4 2 3 5]
+	// 2
 }
 
 func ExampleGather() {
